@@ -18,21 +18,28 @@ export class ManageProductsService extends ApiService {
     }
 
     return this.getPreSignedUrl(file.name).pipe(
-      switchMap((url) =>
-        this.http.put(url, file, {
+      switchMap((response) => {
+        const url = JSON.parse(response?.body);
+        return this.http.put(url, file, {
           headers: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             'Content-Type': 'text/csv',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            'Access-Control-Allow-Headers': '*',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            'Access-Control-Allow-Methods': '*',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            'Access-Control-Allow-Origin': '*',
           },
-        })
-      )
+        });
+      })
     );
   }
 
-  private getPreSignedUrl(fileName: string): Observable<string> {
+  private getPreSignedUrl(fileName: string): Observable<any> {
     const url = this.getUrl('import', 'import');
 
-    return this.http.get<string>(url, {
+    return this.http.get<any>(url, {
       params: {
         name: fileName,
       },
