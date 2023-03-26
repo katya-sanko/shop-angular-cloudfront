@@ -17,18 +17,20 @@ export class ManageProductsService extends ApiService {
       return EMPTY;
     }
 
-    return this.getPreSignedUrl(file.name).pipe(
+    const token = `Basic ${localStorage.getItem('authorization_token')}`;
+
+    console.log(token);
+
+    return this.getPreSignedUrl(file.name, token).pipe(
       switchMap((response) => {
-        const url = JSON.parse(response?.body);
+        const url = response;
         return this.http.put(url, file, {
           headers: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
+            //eslint-disable-next-line @typescript-eslint/naming-convention
             'Content-Type': 'text/csv',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
+            //eslint-disable-next-line @typescript-eslint/naming-convention
             'Access-Control-Allow-Headers': '*',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            'Access-Control-Allow-Methods': '*',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
+            //eslint-disable-next-line @typescript-eslint/naming-convention
             'Access-Control-Allow-Origin': '*',
           },
         });
@@ -36,12 +38,16 @@ export class ManageProductsService extends ApiService {
     );
   }
 
-  private getPreSignedUrl(fileName: string): Observable<any> {
+  private getPreSignedUrl(fileName: string, token: string): Observable<any> {
     const url = this.getUrl('import', 'import');
 
     return this.http.get<any>(url, {
       params: {
         name: fileName,
+      },
+      headers: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        Authorization: token,
       },
     });
   }
