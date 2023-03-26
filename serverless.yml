@@ -1,4 +1,4 @@
-service: shop-angular-bucket
+service: shop-angular-bucket-3
 frameworkVersion: "3"
 
 provider:
@@ -12,7 +12,7 @@ plugins:
 
 custom:
   client:
-    bucketName: shop-angular-bucket
+    bucketName: shop-angular-bucket-3
     distributionFolder: dist/app
   ## Serverless-single-page-app-plugin configuration:
   s3LocalPath: ${self:custom.client.distributionFolder}/
@@ -25,7 +25,7 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:custom.s3BucketName}
-        AccessControl: PublicRead
+        AccessControl: Private
         WebsiteConfiguration:
           IndexDocument: index.html
           ErrorDocument: index.html
@@ -63,7 +63,7 @@ resources:
       Properties:
         DistributionConfig:
           Origins:
-            - DomainName: ${self:custom.s3BucketName}.s3-${self:provider.region}.amazonaws.com
+            - DomainName: ${self:custom.s3BucketName}.s3.${self:provider.region}.amazonaws.com
               ## An identifier for the origin which must be unique within the distribution
               Id: myS3Origin
               ## In case you don't want to restrict the bucket access use CustomOriginConfig and remove S3OriginConfig
